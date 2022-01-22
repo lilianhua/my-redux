@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Redux</title>
+</head>
+<body>
+<div>
+    <button id="increment">+1</button>
+    <span id="box">0</span>
+    <button id="decrement">-1</button>
+</div>
+<script src="my-redux.js"></script>
+<script src="middlewares/logger.js"></script>
+<script src="middlewares/thunk.js"></script>
+<script>
+
+    function enhancer(createStore) {
+        return function (reducer, preloadedState) {
+            const store = createStore(reducer, preloadedState)
+            const dispatch = store.dispatch
+
+            function _dispatch(action) {
+                if (typeof action === 'function') {
+                    // action是函数，则执行
+                    return action(dispatch)
+                }
+                dispatch(action)
+            }
+
+            return {
+                ...store,
+                dispatch: _dispatch
+            }
+        }
+    }
+
+    function reducer(state, action) {
+        switch (action.type) {
+            case 'increment':
+                return state + 1
+            case 'decrement':
+                return state - 1
+            default:
+                return state
+        }
+    }
+
+    const store = createStore(reducer, 0, applyMiddleware(logger, thunk))
+    store.subscribe(() => {
+        const box = document.getElementById('box')
+        box.innerHTML = store.getState()
+    })
+    document.getElementById('increment').onclick = function () {
+        store.dispatch({type: 'increment'})
+    }
+    document.getElementById('decrement').onclick = function () {
+        store.dispatch({type: 'decrement'})
+        // store.dispatch((dispatch) => {
+        //     setTimeout(() => {
+        //         dispatch({type: 'decrement'})
+        //     }, 2000)
+        // })
+    }
+</script>
+</body>
+</html>
