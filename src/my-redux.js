@@ -88,3 +88,20 @@ function bindActionCreators(actionCreators, dispatch) {
     }
     return boundActionCreators
 }
+
+function combindReducer(reducers) {
+    // 判断reducer中的value都是函数
+    const reducerKeys = Object.keys(reducers)
+    reducerKeys.forEach(key => {
+        if (typeof reducers[key] !== 'function') throw new Error('reducer必须是函数.')
+    })
+    return function (state, action) {
+        const nextState = {}
+        reducerKeys.forEach(key => {
+            const reducer = reducers[key]
+            const previousState = state[key]
+            nextState[key] = reducer(previousState, action)
+        })
+        return nextState
+    }
+}

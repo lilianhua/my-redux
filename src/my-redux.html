@@ -38,7 +38,7 @@
         }
     }
 
-    function reducer(state, action) {
+    function counterReducer(state, action) {
         switch (action.type) {
             case 'increment':
                 return state + 1
@@ -49,7 +49,9 @@
         }
     }
 
-    const store = createStore(reducer, 0, applyMiddleware(logger, thunk))
+    const rootReducer = combindReducer({counter: counterReducer})
+
+    const store = createStore(rootReducer, {counter: 100}, applyMiddleware(logger, thunk))
 
     function increment() {
         return {type: 'increment'}
@@ -63,7 +65,7 @@
 
     store.subscribe(() => {
         const box = document.getElementById('box')
-        box.innerHTML = store.getState()
+        box.innerHTML = store.getState().counter
     })
     document.getElementById('increment').onclick = function () {
         // store.dispatch({type: 'increment'})
