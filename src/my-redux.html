@@ -49,7 +49,7 @@
         }
     }
 
-    const rootReducer = combindReducer({counter: counterReducer})
+    const rootReducer = combineReducer({counter: counterReducer})
 
     const store = createStore(rootReducer, {counter: 100}, applyMiddleware(logger, thunk))
 

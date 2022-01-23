@@ -89,7 +89,7 @@ function bindActionCreators(actionCreators, dispatch) {
     return boundActionCreators
 }
 
-function combindReducer(reducers) {
+function combineReducer(reducers) {
     // 判断reducer中的value都是函数
     const reducerKeys = Object.keys(reducers)
     reducerKeys.forEach(key => {
